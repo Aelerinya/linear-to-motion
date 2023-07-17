@@ -4,11 +4,17 @@ from datetime import datetime
 
 from model import Cycle, Task, Project
 
-def get_workspace_id():
-    headers = {
-        "X-API-KEY": os.environ.get("MOTION_API_KEY")
+def get_headers():
+    key = os.environ.get("MOTION_API_KEY")
+    if not key:
+        print("Motion API key not found")
+        exit()
+    return {
+        "X-API-KEY": key
     }
-    response = requests.get("https://api.usemotion.com/v1/workspaces", headers=headers)
+
+def get_workspace_id():
+    response = requests.get("https://api.usemotion.com/v1/workspaces", headers=get_headers())
     if response.status_code != 200:
         print(response.text)
         exit()
@@ -20,19 +26,13 @@ def get_workspace_id():
     exit()
 
 def get_user_id():
-    headers = {
-        "X-API-KEY": os.environ.get("MOTION_API_KEY")
-    }
-    response = requests.get("https://api.usemotion.com/v1/users/me", headers=headers)
+    response = requests.get("https://api.usemotion.com/v1/users/me", headers=get_headers())
     if response.status_code != 200:
         print(response.text)
         exit()
     return response.json()["id"]
 
-def create_task(task, workspace_id, user_id, cycle_info, project_id=None):
-    headers = {
-        "X-API-KEY": os.environ.get("MOTION_API_KEY")
-    }
+def create_task(task: Task, workspace_id: str, user_id: str, cycle_info: Cycle, project_id: str|None =None):
     due_date = cycle_info.endDate
     start_date = cycle_info.startDate
     duration = {
@@ -63,15 +63,12 @@ def create_task(task, workspace_id, user_id, cycle_info, project_id=None):
     if project_id:
         body["projectId"] = project_id
 
-    response = requests.post("https://api.usemotion.com/v1/tasks", headers=headers, json=body)
+    response = requests.post("https://api.usemotion.com/v1/tasks", headers=get_headers(), json=body)
     if response.status_code != 201:
         print(response.text)
         exit()
 
-def create_project(project, workspace_id, user_id, cycle_info):
-    headers = {
-        "X-API-KEY": os.environ.get("MOTION_API_KEY")
-    }
+def create_project(project: Project, workspace_id: str, user_id: str, cycle_info: Cycle):
     due_date = cycle_info.endDate
     name = f"[API] {project.title}"
     description = project.url
@@ -87,7 +84,7 @@ def create_project(project, workspace_id, user_id, cycle_info):
         "priority": priority
     }
 
-    response = requests.post("https://api.usemotion.com/v1/projects", headers=headers, json=body)
+    response = requests.post("https://api.usemotion.com/v1/projects", headers=get_headers(), json=body)
     if response.status_code != 201:
         print(response.text)
         exit()

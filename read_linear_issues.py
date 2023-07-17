@@ -1,6 +1,5 @@
 import os
 import requests
-from collections import namedtuple
 from model import Issue, Cycle, Task, Project
 
 def read_issues():
@@ -46,9 +45,8 @@ def read_issues():
     cycles = data["data"]["cycles"]["nodes"]
     issues = cycles[0]["issues"]["nodes"]
 
-    issue_list = []
+    issue_list: list[Issue] = []
     for issue in issues:
-        assignee = issue["assignee"]["displayName"]
         url = issue["url"]
         title = issue["title"]
         estimate = issue["estimate"]
@@ -61,11 +59,11 @@ def read_issues():
 
     return issue_list, cycle
 
-def get_projects(issues):
-    projects = []
+def get_projects(issues: list[Issue]):
+    projects: list[Project] = []
     for issue in issues:
         if issue.childrenIds:
-            tasks = []
+            tasks: list[Task] = []
             if issue.estimate != 0:
                 task = Task(issue.title, issue.id, issue.url, issue.estimate)
                 tasks.append(task)
@@ -73,8 +71,8 @@ def get_projects(issues):
             projects.append(project)
     return projects
 
-def get_tasks(issues, projects):
-    tasks = []
+def get_tasks(issues: list[Issue], projects: list[Project]):
+    tasks: list[Task] = []
     for issue in issues:
         if not issue.childrenIds:
             if issue.parentId:
@@ -87,7 +85,7 @@ def get_tasks(issues, projects):
                 tasks.append(task)
     return tasks
 
-def print_markdown(cycle, projects, tasks):
+def print_markdown(cycle: Cycle, projects: list[Project], tasks: list[Task]):
     print(f"# {cycle.name}")
     print(f"Start Date: {cycle.startDate}")
     print(f"End Date: {cycle.endDate}")

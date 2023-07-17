@@ -1,9 +1,29 @@
-from collections import namedtuple
+from typing import NamedTuple
 from dotenv import load_dotenv
 
 load_dotenv()
 
-Issue = namedtuple('Issue', ['title', 'id', 'url', 'estimate', 'parentId', 'childrenIds'])
-Cycle = namedtuple('Cycle', ['name', 'startDate', 'endDate'])
-Task = namedtuple('Task', ['title', 'id', 'url', 'estimate'])
-Project = namedtuple('Project', ['title', 'id', 'url', 'tasks'])
+class Issue(NamedTuple):
+    title: str
+    id: str
+    url: str
+    estimate: int
+    parentId: str | None
+    childrenIds: list[str]
+
+class Cycle(NamedTuple):
+    name: str
+    startDate: str
+    endDate: str
+
+class Task(NamedTuple):
+    title: str
+    id: str
+    url: str
+    estimate: int
+
+class Project(NamedTuple):
+    title: str
+    id: str
+    url: str
+    tasks: list[Task]
