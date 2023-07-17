@@ -20,7 +20,7 @@ def get_workspace_id():
         exit()
     workspaces = response.json()["workspaces"]
     for workspace in workspaces:
-        if workspace["name"] == "Test API":
+        if workspace["name"] == "Cryptio":
             return workspace["id"]
     print("Workspace 'Test API' not found")
     exit()

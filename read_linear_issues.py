@@ -5,7 +5,7 @@ from model import Issue, Cycle, Task, Project
 def read_issues():
     query = """
     query ExampleQuery {
-        cycles(first: 1, filter: { isActive: { eq: true } }) {
+        cycles(first: 1, filter: { isNext: { eq: true } }) {
             nodes {
                 id
                 name
