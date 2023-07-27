@@ -1,9 +1,11 @@
 import os
 import requests
 from model import Issue, Cycle, Task, Project
+from string import Template
+import config
 
 def read_issues():
-    query = """
+    query = Template("""
     query ExampleQuery {
         cycles(first: 1, filter: { isNext: { eq: true } }) {
             nodes {
@@ -11,7 +13,7 @@ def read_issues():
                 name
                 endsAt
                 startsAt
-                issues(filter: { assignee: { email: { eq: "lucie@cryptio.co" } } }) {
+                issues(filter: { assignee: { email: { eq: "$email" } } }) {
                     nodes {
                         assignee {
                             displayName
@@ -33,10 +35,10 @@ def read_issues():
             }
         }
     }
-    """
+    """).substitute(email=config.linear_email)
 
     headers = {
-        "Authorization": f"Bearer {os.environ['LINEAR_API_KEY']}"
+        "Authorization": f"Bearer {config.linear_api_key}",
     }
 
     response = requests.post("https://api.linear.app/graphql", json={"query": query}, headers=headers)

@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 requests = "*"
-python-dotenv = "*"
+pydantic-settings = "*"
 
 [dev-packages]
 

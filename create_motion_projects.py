@@ -1,16 +1,13 @@
 import requests
 import os
 from datetime import datetime
+import config
 
 from model import Cycle, Task, Project
 
 def get_headers():
-    key = os.environ.get("MOTION_API_KEY")
-    if not key:
-        print("Motion API key not found")
-        exit()
     return {
-        "X-API-KEY": key
+        "X-API-KEY": config.motion_api_key
     }
 
 def get_workspace_id():
@@ -20,7 +17,7 @@ def get_workspace_id():
         exit()
     workspaces = response.json()["workspaces"]
     for workspace in workspaces:
-        if workspace["name"] == "Cryptio":
+        if workspace["name"] == config.workspace_name:
             return workspace["id"]
     print("Workspace 'Test API' not found")
     exit()
